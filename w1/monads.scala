@@ -2,7 +2,7 @@ trait M[T] {
 	def flatMap[U](f:T => M[U]):M[U] //can be also called bind
 }
 
-def unit[T](x:T):M[T]
+def unit[T](x:T):M[T] = Unit
 
 // Three laws exist to prove that a structure is a monad:
 
