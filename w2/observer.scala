@@ -23,14 +23,36 @@ class BankAccount extends Publisher {
 			balance = balance+amount 
 			publish()
 		}
-	def with	
+	def withdraw(amount:Int):Unit =
+		if (0 < amount && amount<=balance) {
+			balance = balance - amount
+			publish()
+		} else throw new Error("insufficient funds")	
 }
 
-clas Consolidator(observed:List[BankAccount]) extends Subscriber {
+class Consolidator(observed:List[BankAccount]) extends Subscriber {
 	observed.foreach(_.subscribe(this))
 
 	private var total:Int = _
 	compute()
 
 	private def compute() = 
+		total = observed.map(_.currentBalance).sum
+
+	def handler(pub:Publisher) = compute()
+	
+	def totalBalance = total	
 }
+
+val a = new BankAccount
+val b = new BankAccount
+val c = new Consolidator(List(a, b))
+println(c.totalBalance)
+
+a deposit 20 
+
+println(c.totalBalance)
+
+b deposit 30 
+
+println(c.totalBalance)
